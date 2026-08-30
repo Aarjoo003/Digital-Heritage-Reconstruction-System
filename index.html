@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Digital Heritage Reconstruction System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+  :root{
+    --ink:#12181B; --ink-2:#1B2327; --ink-3:#222b30;
+    --stone:#333f47; --sandstone:#c08a49; --sandstone-dim:#8a6435;
+    --patina:#5e8c7c; --ember:#a24a3a;
+    --ivory:#ede8dc; --ivory-dim:#b9b3a4;
+    --line: rgba(237,232,220,0.14);
+    --good:#6fae7f; --bad:#c1665a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--ink); color:var(--ivory); font-family:'Karla',sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  ::selection{background:var(--sandstone); color:var(--ink);}
+  button{font-family:inherit;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--sandstone);}
+
+  /* ---------- HEADER ---------- */
+  header.site{padding:26px 40px 20px; border-bottom:1px solid var(--line); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; position:relative;}
+  header.site::before{content:""; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg,var(--sandstone-dim),var(--sandstone) 20%,var(--patina) 55%,var(--ember) 85%,var(--sandstone-dim)); opacity:.85;}
+  .brand h1{font-family:'Cormorant Garamond',serif; font-weight:700; font-size:clamp(28px,4vw,42px); margin:6px 0 4px;}
+  .brand p{margin:0; color:var(--ivory-dim); font-size:14px; max-width:560px;}
+  .header-meta{display:flex; gap:28px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ivory-dim);}
+  .header-meta div span{display:block; color:var(--ivory); font-size:13px; margin-top:3px;}
+
+  /* ---------- PROJECT STATEMENT PILLARS ---------- */
+  .pillars{padding:26px 40px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px;}
+  .pillar{background:var(--ink-2); border:1px solid var(--line); padding:18px 18px 16px; border-radius:4px;}
+  .pillar .icon{font-size:22px; margin-bottom:10px; display:block;}
+  .pillar h3{margin:0 0 6px; font-family:'Cormorant Garamond',serif; font-size:19px; color:var(--sandstone);}
+  .pillar p{margin:0; font-size:12.5px; color:var(--ivory-dim); line-height:1.55;}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{display:grid; grid-template-columns:250px 1fr; min-height:calc(100vh - 110px);}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr;}}
+
+  nav.plaques{border-right:1px solid var(--line); padding:22px 16px; display:flex; flex-direction:column; gap:12px;}
+  @media (max-width:900px){nav.plaques{border-right:none; border-bottom:1px solid var(--line); flex-direction:row; overflow-x:auto; padding:16px;}}
+  .plaque{background:linear-gradient(160deg,#2a3339,#20272b); border:1px solid var(--line); border-radius:3px; padding:14px 14px 12px; cursor:pointer; text-align:left; color:var(--ivory-dim); position:relative; transition:transform .25s ease, border-color .25s ease; min-width:170px; flex:0 0 auto;}
+  .plaque::before{content:attr(data-index); font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--sandstone-dim); display:block; margin-bottom:6px; letter-spacing:.15em;}
+  .plaque .p-name{font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--ivory); display:block; line-height:1.15;}
+  .plaque .p-loc{font-size:11px; margin-top:5px; display:block; color:var(--ivory-dim);}
+  .plaque:hover{transform:translateX(3px); border-color:var(--sandstone-dim);}
+  .plaque.active{border-color:var(--sandstone); background:linear-gradient(160deg,#3a3324,#241f18);}
+  .plaque.active::after{content:""; position:absolute; left:-1px; top:-1px; bottom:-1px; width:3px; background:var(--sandstone);}
+  .plaque.active .p-name{color:var(--sandstone);}
+
+  /* ---------- STAGE ---------- */
+  main{padding:0;}
+  .stage{position:relative; min-height:58vh; display:flex; align-items:flex-end; overflow:hidden; border-bottom:1px solid var(--line);}
+  .stage-backdrop{position:absolute; inset:0; background-size:cover; background-position:center; filter:saturate(0.75) brightness(0.55); transform:scale(1.03); transition:background-image .4s ease, filter .4s ease;}
+  .stage-backdrop::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(18,24,27,.30) 0%, rgba(18,24,27,.55) 55%, var(--ink) 100%);}
+  .stage-backdrop.lt-night{filter:saturate(0.4) brightness(0.28) hue-rotate(180deg) contrast(1.1);}
+  model-viewer{width:100%; height:58vh; min-height:440px; position:relative; z-index:1; background-color:transparent;}
+
+  .stage-topbar{position:absolute; top:16px; left:24px; right:24px; z-index:3; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; pointer-events:none;}
+  .stage-topbar > *{pointer-events:auto;}
+  .stage-caption{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ivory-dim); background:rgba(18,24,27,.55); padding:7px 12px; border:1px solid var(--line); border-radius:3px;}
+  .tour-toggle{background:var(--sandstone); color:var(--ink); border:none; font-weight:700; font-size:12px; padding:9px 16px; border-radius:3px; cursor:pointer; letter-spacing:.03em;}
+  .tour-toggle:hover{background:#d29a55;}
+
+  .stage-toolbar{position:absolute; left:0; right:0; bottom:14px; z-index:3; display:flex; justify-content:center; gap:8px; flex-wrap:wrap; padding:0 20px;}
+  .tool-btn{background:rgba(18,24,27,.75); border:1px solid var(--line); color:var(--ivory); font-size:12px; padding:9px 14px; border-radius:20px; cursor:pointer; display:flex; align-items:center; gap:6px; backdrop-filter:blur(4px);}
+  .tool-btn:hover{border-color:var(--sandstone);}
+  .tool-btn.on{border-color:var(--patina); color:var(--patina);}
+
+  /* ---------- OVERLAY PANELS (Guided Tour / Focus card) ---------- */
+  .overlay-panel{position:absolute; top:16px; z-index:4; width:280px; background:#1a2226ee; border:1px solid var(--line); border-radius:4px; padding:16px 16px 14px; box-shadow:0 12px 30px rgba(0,0,0,.4); animation:reveal .35s ease;}
+  .overlay-panel.left{left:24px;}
+  .overlay-panel.right{right:24px;}
+  .overlay-panel .op-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;}
+  .overlay-panel .op-close{background:none; border:none; color:var(--ivory-dim); font-size:16px; cursor:pointer; line-height:1;}
+  .overlay-panel h4{font-family:'Cormorant Garamond',serif; font-size:19px; margin:2px 0 8px; color:var(--ivory);}
+  .overlay-panel p{font-size:12.5px; color:var(--ivory-dim); line-height:1.55; margin:0 0 10px;}
+  .tour-step{display:flex; align-items:center; gap:10px; padding:9px 10px; border:1px solid var(--line); border-radius:3px; margin-bottom:7px; cursor:pointer; background:var(--ink-2); font-size:13px;}
+  .tour-step .n{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--sandstone-dim); flex:0 0 auto;}
+  .tour-step:hover{border-color:var(--sandstone-dim);}
+  .tour-step.active{border-color:var(--sandstone); color:var(--sandstone);}
+  .tour-nav{display:flex; justify-content:space-between; gap:8px; margin-top:10px;}
+  .tour-nav button{flex:1; background:var(--ink-3); border:1px solid var(--line); color:var(--ivory); padding:8px; border-radius:3px; cursor:pointer; font-size:12px;}
+  .tour-nav button:hover{border-color:var(--sandstone);}
+  .mini-btn{background:var(--ink-3); border:1px solid var(--line); color:var(--ivory); padding:7px 11px; border-radius:3px; cursor:pointer; font-size:11.5px; display:inline-flex; align-items:center; gap:5px;}
+  .mini-btn:hover{border-color:var(--sandstone);}
+  .mini-btn.gold{background:var(--sandstone); color:var(--ink); border-color:var(--sandstone); font-weight:700;}
+
+  /* ---------- TITLE + FACT STRIP ---------- */
+  .title-block{padding:30px 40px 10px;}
+  .title-block h2{font-family:'Cormorant Garamond',serif; font-size:clamp(34px,5vw,58px); margin:2px 0 6px; font-weight:700;}
+  .title-block .tagline{color:var(--ivory-dim); font-size:15px; max-width:640px; margin:0 0 18px;}
+  .fact-strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin-bottom:6px;}
+  .fact{background:var(--ink-2); padding:12px 16px;}
+  .fact .eyebrow{display:block; margin-bottom:5px;}
+  .fact .val{font-size:14px; color:var(--ivory);}
+
+  /* ---------- TABS ---------- */
+  .tabs{display:flex; gap:2px; margin:22px 40px 0; border-bottom:1px solid var(--line); overflow-x:auto;}
+  .tab-btn{background:none; border:none; color:var(--ivory-dim); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase; padding:12px 16px; cursor:pointer; position:relative; top:1px; white-space:nowrap;}
+  .tab-btn.active{color:var(--sandstone); border-bottom:2px solid var(--sandstone);}
+  .tab-panels{padding:28px 40px 60px; max-width:1000px;}
+  .panel{display:none; animation:reveal .5s ease;}
+  .panel.active{display:block;}
+  @keyframes reveal{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .chronicle p{line-height:1.75; font-size:15.5px; color:#ded8c9; margin:0 0 18px;}
+  .chronicle .legend{border-left:3px solid var(--patina); padding:4px 0 4px 16px; margin:22px 0; color:var(--ivory); font-family:'Cormorant Garamond',serif; font-size:19px; font-style:italic; line-height:1.5;}
+  h4.label{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--sandstone); margin:0;}
+
+  /* Architecture */
+  .arch-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+  .arch-card{background:var(--ink-2); border:1px solid var(--line); padding:16px 18px; border-radius:3px;}
+  .arch-card h5{font-family:'Cormorant Garamond',serif; font-size:19px; margin:0 0 8px; color:var(--ivory);}
+  .arch-card p{font-size:13.5px; color:var(--ivory-dim); line-height:1.6; margin:0 0 12px;}
+  .arch-card .row{display:flex; gap:8px; flex-wrap:wrap;}
+
+  /* Gallery */
+  .gallery-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px;}
+  .gallery-grid figure{margin:0; border:1px solid var(--line); background:var(--ink-2);}
+  .gallery-grid img{width:100%; height:210px; object-fit:cover; display:block; filter:saturate(0.92);}
+  .gallery-grid figcaption{font-size:12px; color:var(--ivory-dim); padding:10px 12px;}
+
+  /* Preservation / Current status */
+  .status-card{background:var(--ink-2); border:1px solid var(--line); border-left:3px solid var(--ember); padding:20px 22px; margin-bottom:16px;}
+  .status-card.alt{border-left-color:var(--patina);}
+  .status-card h4{color:var(--ember); margin:0 0 10px;}
+  .status-card.alt h4{color:var(--patina);}
+  .status-card p{line-height:1.7; font-size:15px; color:#ded8c9; margin:0;}
+  .setting-note{display:flex; gap:12px; align-items:flex-start; background:var(--ink-2); border:1px solid var(--line); padding:16px 18px; margin-top:18px;}
+  .setting-note .dot{width:8px; height:8px; border-radius:50%; background:var(--patina); margin-top:6px; flex:0 0 auto;}
+  .setting-note p{margin:0; font-size:14px; color:var(--ivory-dim); line-height:1.6;}
+
+  /* Guided tour tab (inline list, mirrors overlay) */
+  .tour-steps-inline{display:grid; gap:10px; margin-top:14px;}
+
+  /* Quiz */
+  .quiz-box{background:var(--ink-2); border:1px solid var(--line); padding:24px; border-radius:4px; max-width:640px;}
+  .quiz-progress{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ivory-dim); margin-bottom:14px;}
+  .quiz-q{font-family:'Cormorant Garamond',serif; font-size:22px; margin:0 0 16px; color:var(--ivory);}
+  .quiz-opts{display:grid; gap:9px;}
+  .quiz-opt{text-align:left; background:var(--ink-3); border:1px solid var(--line); color:var(--ivory); padding:12px 14px; border-radius:3px; cursor:pointer; font-size:14px;}
+  .quiz-opt:hover{border-color:var(--sandstone);}
+  .quiz-opt.correct{border-color:var(--good); color:var(--good);}
+  .quiz-opt.wrong{border-color:var(--bad); color:var(--bad);}
+  .quiz-footer{margin-top:16px; display:flex; justify-content:space-between; align-items:center;}
+  .quiz-result{font-family:'Cormorant Garamond',serif; font-size:26px; margin-bottom:10px;}
+
+  footer{border-top:1px solid var(--line); padding:22px 40px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ivory-dim); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  footer a{color:var(--sandstone);}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand">
+    <h1>Digital Heritage Reconstruction System</h1>
+    <p>Interactive 3D reconstructions of five Indian monuments — built for heritage preservation, education and virtual tourism.</p>
+  </div>
+  <div class="header-meta">
+    <div>Monuments<span id="metaCount">05</span></div>
+    <div>Exploration<span>Free-roam + Guided</span></div>
+    <div>Audio Guide<span>Available</span></div>
+  </div>
+</header>
+
+<section class="pillars">
+  <div class="pillar"><span class="icon">🏛️</span><h3>Digital Reconstruction</h3><p>High-fidelity 3D digital twins of each monument, rebuilt from historical references and architectural surveys for study from any angle.</p></div>
+  <div class="pillar"><span class="icon">🎓</span><h3>Education</h3><p>Layered history, architecture and a self-guided tour of every structure, with an audio narrator for hands-free learning.</p></div>
+  <div class="pillar"><span class="icon">🛡️</span><h3>Preservation</h3><p>Digital documentation that safeguards each monument's form and detailing, alongside real conservation status and current condition.</p></div>
+  <div class="pillar"><span class="icon">🧭</span><h3>Tourism</h3><p>A virtual visitor experience — orbit, zoom and walk through guided viewpoints as if standing at the actual site.</p></div>
+</section>
+
+<div class="wrap">
+  <nav class="plaques" id="plaqueNav"></nav>
+
+  <main>
+    <section class="stage">
+      <div class="stage-backdrop" id="stageBackdrop"></div>
+      <model-viewer id="viewer" camera-controls auto-rotate auto-rotate-delay="1200" rotation-per-second="10deg"
+        shadow-intensity="1" exposure="1.05" interaction-prompt="none" environment-image="neutral"
+        interpolation-decay="180" ar>
+      </model-viewer>
+
+      <div class="stage-topbar">
+        <div class="stage-caption" id="stageCaption">Interactive 3D Reconstruction</div>
+        <button class="tour-toggle" id="tourToggleBtn">🧭 Start Guided Tour</button>
+      </div>
+
+      <div class="overlay-panel left" id="tourPanel" style="display:none;">
+        <div class="op-head"><h4>Guided Heritage Route</h4><button class="op-close" id="tourClose">✕</button></div>
+        <div id="tourStepsList"></div>
+        <div class="tour-nav"><button id="tourPrev">◀ Prev</button><button id="tourNext">Next ▶</button></div>
+      </div>
+
+      <div class="overlay-panel right" id="focusPanel" style="display:none;">
+        <div class="op-head"><h4 id="focusTitle">Feature</h4><button class="op-close" id="focusClose">✕</button></div>
+        <p id="focusDesc"></p>
+        <div class="row" style="display:flex;gap:8px;">
+          <button class="mini-btn gold" id="focusRefocus">🎯 Re-focus</button>
+        </div>
+      </div>
+
+      <div class="stage-toolbar">
+        <button class="tool-btn" id="btnReset">↺ Reset View</button>
+        <button class="tool-btn on" id="btnRotate">⟳ Auto-Rotate</button>
+        <button class="tool-btn" id="btnLight">🌤 Daylight</button>
+        <button class="tool-btn" id="btnAudio">🔊 Audio Guide</button>
+        <button class="tool-btn" id="btnFullscreen">⤢ Fullscreen</button>
+      </div>
+    </section>
+
+    <div class="title-block">
+      <span class="eyebrow" id="eraTag">ERA</span>
+      <h2 id="monName">—</h2>
+      <p class="tagline" id="monTagline">—</p>
+      <div class="fact-strip" id="factStrip"></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="history">History</button>
+      <button class="tab-btn" data-tab="architecture">Architecture</button>
+      <button class="tab-btn" data-tab="gallery">Gallery</button>
+      <button class="tab-btn" data-tab="preservation">Preservation</button>
+      <button class="tab-btn" data-tab="status">Current Status</button>
+      <button class="tab-btn" data-tab="quiz">Quiz</button>
+    </div>
+
+    <div class="tab-panels">
+      <div class="panel active" id="panel-history"></div>
+      <div class="panel" id="panel-architecture"></div>
+      <div class="panel" id="panel-gallery"></div>
+      <div class="panel" id="panel-preservation"></div>
+      <div class="panel" id="panel-status"></div>
+      <div class="panel" id="panel-quiz"></div>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <span>Digital Heritage Reconstruction System · Original 3D reconstructions of five Indian monuments</span>
+  <span>Photographic references courtesy of public archival collections (Wikimedia Commons)</span>
+</footer>
+
+<script>
+const V = {
+  overall:"0deg 75deg 105%", crown:"0deg 22deg 120%", base:"15deg 88deg 68%", side:"90deg 75deg 100%",
+  approach:"0deg 80deg 145%", wide:"45deg 80deg 160%"
+};
+
+const MONUMENTS = [
+  {
+    id:"charminar", name:"Charminar",
+    tagline:"The four-minaret mosque and gateway that gave birth to the city of Hyderabad.",
+    location:"Hyderabad, Telangana, India", era:"Built 1591 CE", style:"Indo-Islamic (Qutb Shahi)",
+    builder:"Muhammad Quli Qutb Shah", coords:"17.3616° N, 78.4747° E",
+    model:"assets/models/charminar.glb",
+    backdrop:"https://commons.wikimedia.org/wiki/Special:FilePath/Charminar-Pride%20of%20Hyderabad.jpg?width=1600",
+    history:[
+      "When Muhammad Quli Qutb Shah, fifth ruler of the Qutb Shahi dynasty, shifted his capital from the hill fort of Golconda to a new city on the banks of the Musi river, he marked its centre with the Charminar. Construction began in 1589 and finished around 1591 — a square structure roughly 20 metres to a side, with four soaring 56-metre minarets rising from grand arches that once opened directly onto the city's four busiest royal streets.",
+      "It is widely held that the monument was raised to commemorate the end of a devastating plague that had swept the region — a votive act of thanksgiving at the dawn of a new city. A more romantic local legend ties it to the site where the Sultan first glimpsed his future queen, Bhagmati, though historians treat this as folklore rather than fact.",
+      "It has always been more than a monument: the upper floor has held a working mosque for over 430 years, and the surrounding streets grew into the Old City of Hyderabad, radiating outward in four quadrants exactly as Qutb Shah's planners intended."
+    ],
+    legend:"“Make my city as populous as the ocean is full of fish.” — the couplet Qutb Shah is said to have recited while laying the Charminar's foundation.",
+    architecture:[
+      {title:"Four Grand Arches", view:"overall", desc:"Each face opens through a monumental arch onto what were once the city's four principal roads, giving the structure its name — Char (four) Minar (towers)."},
+      {title:"Domed Minaret Finials", view:"crown", desc:"Each 56-metre minaret is crowned with a bulbous dome, ringed by a delicate carved balcony that once let muezzins call the faithful to prayer over the rooftops of the old city."},
+      {title:"The Ground-Floor Approach", view:"base", desc:"Built from granite and lime mortar with a fine pulverised-marble stucco finish, the ground floor arches frame the entrance to Laad Bazaar's bangle stalls just beyond."},
+      {title:"Four-Arch Symmetrical Facade", view:"side", desc:"Viewed from any single side, the structure reads as a perfectly symmetrical triumphal gateway — a deliberate statement of civic order at the heart of the new capital."}
+    ],
+    preservation:"The Charminar is a protected monument under the Archaeological Survey of India and remains a functioning mosque. Along with Golconda Fort and the Qutb Shahi Tombs, it is on UNESCO's tentative World Heritage list, and a long-running Pedestrianisation Project aims to close the immediate area to vehicles to protect the structure from traffic vibration and pollution damage.",
+    status:"It stands at the heart of the still-thriving Laad Bazaar, famed for bangles and pearls, and remains one of India's most photographed landmarks — though dense traffic and air pollution continue to accelerate wear on its stucco and stonework, making conservation an ongoing effort rather than a finished task.",
+    setting:"Encircled by the narrow, awning-shaded lanes of Laad Bazaar, with the ornate Makkah Masjid just to the southwest and the Musi river close behind — a dense, living old-city fabric rather than an isolated ruin.",
+    gallery:[
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Charminar-Pride%20of%20Hyderabad.jpg?width=900", caption:"Charminar rising above the old city, all four minarets visible."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Charminar,%20Hyderabad%2018.jpg?width=900", caption:"Detail of the arches and balustraded minaret balconies."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Interior%20of%20the%20Charminar,%20Hyderabad%2018.jpg?width=900", caption:"Inside the upper mosque gallery, one of the two internal floors."}
+    ],
+    tour:[
+      {t:"Approaching from Laad Bazaar", d:"You arrive the way most visitors have for four centuries — through the bangle-sellers' lane, the four minarets framing the sky ahead.", view:"approach"},
+      {t:"The Four Grand Arches", d:"Each of the four faces opens through an enormous arch onto what were once the city's principal roads.", view:"overall"},
+      {t:"Ground-Floor Detail", d:"Granite and lime-mortar stucco, carved in fine detail at street level.", view:"base"},
+      {t:"The Symmetrical Facade", v:"", d:"A single side reveals the deliberate, mirror-image symmetry of the design.", view:"side"},
+      {t:"The Minaret Crowns", d:"Bulbous domes and carved balconies top each of the four 56-metre towers.", view:"crown"},
+      {t:"The Old City Beyond", d:"Step back and take in how the Charminar still anchors Hyderabad's old quarter.", view:"wide"}
+    ],
+    quiz:[
+      {q:"In which year was the Charminar completed?", opts:["1591","1707","1857","1450"], a:0},
+      {q:"Who commissioned the Charminar?", opts:["Akbar","Muhammad Quli Qutb Shah","Shah Jahan","Tipu Sultan"], a:1},
+      {q:"What does 'Charminar' literally mean?", opts:["Golden Gate","Four Towers","Royal Court","Sacred Well"], a:1}
+    ]
+  },
+  {
+    id:"gateway", name:"Gateway of India",
+    tagline:"A basalt triumphal arch built to welcome a king — and later used to send an empire home.",
+    location:"Apollo Bunder, Colaba, Mumbai, Maharashtra", era:"Completed 1924", style:"Indo-Saracenic",
+    builder:"Architect: George Wittet", coords:"18.9220° N, 72.8347° E",
+    model:"assets/models/gateway-of-india.glb",
+    backdrop:"https://commons.wikimedia.org/wiki/Special:FilePath/Mumbai%2003-2016%2030%20Gateway%20of%20India.jpg?width=1600",
+    history:[
+      "The Gateway was commissioned to mark the December 1911 visit of King George V and Queen Mary to Bombay — the first time a reigning British monarch had set foot in India. The foundation stone was laid in 1913, but construction dragged on for over a decade; architect George Wittet's 26-metre basalt arch, blending Indo-Saracenic form with Gujarati architectural detailing, was finally completed in 1924.",
+      "For its first two decades it served exactly the ceremonial role it was built for: a grand waterfront entrance where viceroys and dignitaries disembarked and were formally received into India.",
+      "History gave it a symmetrical, almost ironic bookend. On 28 February 1948, the last British troops to leave independent India marched out through the same arch, turning a monument to arrival into a monument of departure."
+    ],
+    legend:"Built to welcome an empire's king in 1911; used to march out an empire's army in 1948.",
+    architecture:[
+      {title:"The Central Dome", view:"crown", desc:"Rising above the arch, the dome draws on Gujarati temple architecture, translated into cut basalt stone."},
+      {title:"Basalt Plinth & Harbour Steps", view:"base", desc:"The arch sits on a raised basalt plinth with steps once used by ferries and naval launches arriving from the harbour."},
+      {title:"The Arch Profile", view:"side", desc:"Seen side-on, the arch's proportions echo Roman triumphal gateways reinterpreted through an Indo-Saracenic lens."},
+      {title:"Full Triumphal Elevation", view:"overall", desc:"The complete 26-metre structure, four turrets and all, facing directly out to the Arabian Sea."}
+    ],
+    preservation:"The Gateway is protected as a State Monument and remains carefully maintained given its status as one of Mumbai's most visited sites. Restoration work periodically addresses erosion from sea-salt air and heavy footfall on the surrounding plaza.",
+    status:"It stands on Mumbai's waterfront opposite the Taj Mahal Palace Hotel, a constant gathering point for locals, vendors and photographers, and the departure point for ferries to Elephanta Caves. It has also witnessed both celebration — an annual Hanukkah menorah-lighting since 2003 — and tragedy, having been near the centre of security incidents in 2003 and 2008, after which surrounding security and crowd management were significantly increased.",
+    setting:"A busy harbour-front plaza: sea spray, ferry jetties, pigeons, and the domed silhouette of the Taj Mahal Palace Hotel forming its constant backdrop.",
+    gallery:[
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Mumbai%2003-2016%2030%20Gateway%20of%20India.jpg?width=900", caption:"The Gateway on Mumbai's waterfront, Apollo Bunder."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Arch-monument%20-%20Gate%20Way%20of%20India.jpg?width=900", caption:"Full frontal view of the basalt triumphal arch."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Gateway%20of%20India%20dome%20inside%20view.JPG?width=900", caption:"Looking up into the interior dome."}
+    ],
+    tour:[
+      {t:"Arriving by the Harbour", d:"The traditional approach — by water, exactly as viceroys once did.", view:"approach"},
+      {t:"The Basalt Plinth", d:"Steps once used by ferries and naval launches from the harbour.", view:"base"},
+      {t:"The Arch Profile", d:"Roman triumphal proportions, reinterpreted in Indo-Saracenic style.", view:"side"},
+      {t:"Full Elevation", d:"The complete arch facing out to the Arabian Sea.", view:"overall"},
+      {t:"The Central Dome", d:"Gujarati temple influences translated into cut basalt.", view:"crown"},
+      {t:"The Waterfront Plaza", d:"Take in the wider harbour setting that surrounds the monument today.", view:"wide"}
+    ],
+    quiz:[
+      {q:"The Gateway of India was built to commemorate the visit of which monarch?", opts:["Queen Victoria","King George V","King Edward VII","King George VI"], a:1},
+      {q:"In what year was construction completed?", opts:["1911","1913","1924","1948"], a:2},
+      {q:"Who was the architect of the Gateway of India?", opts:["Edwin Lutyens","George Wittet","Herbert Baker","Lockwood Kipling"], a:1}
+    ]
+  },
+  {
+    id:"lotus", name:"Lotus Temple",
+    tagline:"Twenty-seven marble petals, open to every religion, in the heart of Delhi.",
+    location:"Kalkaji, New Delhi", era:"Completed 1986", style:"Expressionist / Bahá'í devotional architecture",
+    builder:"Architect: Fariborz Sahba", coords:"28.5535° N, 77.2588° E",
+    model:"assets/models/lotus-temple.glb",
+    backdrop:"https://commons.wikimedia.org/wiki/Special:FilePath/Lotus%20temple%20in%20Delhi,%20India.jpg?width=1600",
+    history:[
+      "Completed in 1986 to the design of architect Fariborz Sahba, the Lotus Temple is the Bahá'í House of Worship for the Indian subcontinent — one of only a handful of such temples worldwide. Its form is deliberate: 27 free-standing marble-clad petals, arranged in three ranks of nine, unfold around a central hall the way a lotus flower opens, resting on a podium surrounded by nine reflecting pools.",
+      "The design follows the same principle every Bahá'í House of Worship follows: nine sides, nine entrances, a single hall with no idols, pulpits, or set rituals — simply a space where people of any faith, or none, can sit in silence, read from their own scripture, or pray in their own way.",
+      "The design won multiple international architecture and engineering awards for its structural ambition, and the building was engineered to let natural light and air circulate through the shell-like petals for much of the year."
+    ],
+    legend:"Nine sides, nine doors, one hall — open to anyone, of any faith.",
+    architecture:[
+      {title:"The Nine Reflecting Pools", view:"base", desc:"Nine pools ring the podium, mirroring the petals above and cooling the surrounding air naturally."},
+      {title:"The Outer Petals", view:"overall", desc:"Nine 'entrance' petals curve outward, forming the nine doorways that define every Bahá'í House of Worship."},
+      {title:"The Petal Tips", view:"crown", desc:"The uppermost petals rise to a point, leaving an open oculus that draws daylight into the central hall below."},
+      {title:"Layered Petal Profile", view:"side", desc:"Seen in profile, three ranks of petals overlap like an unfolding flower — outer, inner, and the innermost bud-like closed petals."}
+    ],
+    preservation:"Maintained directly by the Bahá'í community, the temple undergoes continuous marble cleaning and structural inspection to preserve its bright white finish against Delhi's pollution and monsoon weathering.",
+    status:"The Lotus Temple remains one of the most-visited buildings in the world, drawing several million visitors a year, with free entry and no set ritual — visitors of every faith are simply invited to sit quietly. It regularly features on lists of modern architectural landmarks and remains a major stop on Delhi's tourist circuit.",
+    setting:"Set within landscaped gardens and nine still pools that mirror the petals, deliberately quiet and green against the surrounding density of South Delhi.",
+    gallery:[
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Lotus%20temple%20in%20Delhi,%20India.jpg?width=900", caption:"The full lotus form and reflecting pools."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Lotus%20Temple%20in%20New%20Delhi%2003-2016.jpg?width=900", caption:"Close view of the marble petal cladding."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Lotus%20temple%20daytime.jpg?width=900", caption:"Visitors approaching across the gardens by day."}
+    ],
+    tour:[
+      {t:"Through the Gardens", d:"Visitors approach across landscaped lawns and pools before reaching the podium.", view:"approach"},
+      {t:"The Nine Reflecting Pools", d:"Still water mirrors the marble petals above.", view:"base"},
+      {t:"Layered Petals", d:"Three ranks of petals overlapping like an unfolding flower.", view:"side"},
+      {t:"Full Lotus Form", d:"All 27 petals visible as a single, unified shape.", view:"overall"},
+      {t:"The Open Petal Tips", d:"Daylight enters the hall through the oculus at the top.", view:"crown"},
+      {t:"The Surrounding Gardens", d:"A quiet green setting deliberately separated from the city outside.", view:"wide"}
+    ],
+    quiz:[
+      {q:"How many marble petals make up the Lotus Temple?", opts:["9","18","27","36"], a:2},
+      {q:"Who designed the Lotus Temple?", opts:["Le Corbusier","Fariborz Sahba","Charles Correa","Laurie Baker"], a:1},
+      {q:"Which religion built the Lotus Temple as a House of Worship?", opts:["Hinduism","Sikhism","Bahá'í Faith","Jainism"], a:2}
+    ]
+  },
+  {
+    id:"qutub", name:"Qutub Minar",
+    tagline:"The world's tallest brick minaret, begun by a slave-king who founded an empire.",
+    location:"Mehrauli, New Delhi", era:"Begun 1192–93 CE", style:"Indo-Islamic",
+    builder:"Qutb-ud-din Aibak, completed by Iltutmish", coords:"28.5245° N, 77.1855° E",
+    model:"assets/models/qutub-minar.glb",
+    backdrop:"https://commons.wikimedia.org/wiki/Special:FilePath/Qutub%20Minar,%20Delhi,%20India.jpg?width=1600",
+    history:[
+      "Qutb-ud-din Aibak, the formerly enslaved general who became the first Sultan of Delhi, began building the tower around 1192–93 to stand beside the newly built Quwwat-ul-Islam mosque — India's earliest surviving mosque — most likely to serve as a minaret for the call to prayer and as a tower of victory marking the start of Muslim rule in Delhi. He completed only the first storey before his death.",
+      "His successor, Iltutmish, added three more storeys, and the tower reached its present five-storey, 72.5-metre form — the tallest brick minaret in the world — after later repairs, including reconstruction of the top storeys by Firoz Shah Tughlaq in the 14th century following lightning and earthquake damage. Each level tapers and changes profile, banded with intricately carved verses from the Qur'an.",
+      "The surrounding Qutb complex grew over three centuries of Delhi Sultanate rule, incorporating carved columns recycled from earlier Hindu and Jain temples into the mosque's cloisters — visible evidence of the site's layered history."
+    ],
+    legend:"Five storeys, three dynasties, one tower — begun by a slave who became a Sultan.",
+    architecture:[
+      {title:"The Tapering Shaft", view:"overall", desc:"Each of the five storeys has a different fluted or angular profile, tapering from a 14.3-metre base to under 3 metres at the top."},
+      {title:"Cupola & Uppermost Storey", view:"crown", desc:"The marble-and-sandstone top storeys were rebuilt by Firoz Shah Tughlaq after lightning damage, replacing an earlier cupola lost to an earthquake."},
+      {title:"Entrance & Mosque Plinth", view:"base", desc:"The base adjoins the Quwwat-ul-Islam mosque, India's earliest surviving mosque, built partly from repurposed temple columns."},
+      {title:"Carved Qur'anic Banding", view:"side", desc:"Bands of intricately carved Qur'anic verses in Naskh script wrap each storey, a hallmark of early Indo-Islamic epigraphy."}
+    ],
+    preservation:"Inscribed as a UNESCO World Heritage Site in 1993, the Qutb Minar and its surrounding monuments are protected and maintained by the Archaeological Survey of India, with ongoing structural monitoring of the tower's historic tilt and stonework.",
+    status:"Public access to climb the tower's interior staircase has been closed since 1981, after a stampede triggered by a power failure and overcrowding caused a tragedy inside the narrow stairwell. Visitors today can only view the minar from the surrounding archaeological park, which remains one of Delhi's most-visited heritage sites.",
+    setting:"A landscaped archaeological park of lawns, ruined cloisters and an iron pillar, with the red sandstone and marble tower visible from almost every approach.",
+    gallery:[
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Qutub%20Minar,%20Delhi,%20India.jpg?width=900", caption:"The tapering five-storey minaret."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Qutb%20Minar%20Tower.jpg?width=900", caption:"Close view of the carved sandstone banding."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Carved%20Pillars%20Qutab%20Minar.jpg?width=900", caption:"Recycled temple pillars in the surrounding cloisters."}
+    ],
+    tour:[
+      {t:"Entering the Archaeological Park", d:"The approach through lawns and ruined cloisters that surround the tower.", view:"approach"},
+      {t:"The Mosque Plinth", d:"Where the minaret meets the Quwwat-ul-Islam mosque's recycled temple columns.", view:"base"},
+      {t:"Carved Qur'anic Bands", d:"Each storey wrapped in intricate Naskh-script inscriptions.", view:"side"},
+      {t:"The Tapering Shaft", d:"Five distinct storeys, each with a different profile.", view:"overall"},
+      {t:"The Rebuilt Crown", d:"Marble-and-sandstone top storeys added after earthquake damage.", view:"crown"},
+      {t:"The Wider Complex", d:"Step back to see the tower within its full archaeological park.", view:"wide"}
+    ],
+    quiz:[
+      {q:"Who began construction of the Qutub Minar?", opts:["Iltutmish","Firoz Shah Tughlaq","Qutb-ud-din Aibak","Akbar"], a:2},
+      {q:"Why was public access to the tower's interior closed in 1981?", opts:["Earthquake damage","A stampede tragedy","Ongoing restoration","Bird nesting"], a:1},
+      {q:"What is the Qutub Minar built primarily from?", opts:["Marble only","Red sandstone and marble","Granite","Basalt"], a:1}
+    ]
+  },
+  {
+    id:"sanchi", name:"Sanchi Stupa",
+    tagline:"A 3rd-century-BCE Buddhist monument commissioned by Emperor Ashoka.",
+    location:"Sanchi, Raisen District, Madhya Pradesh", era:"Commissioned c. 250 BCE", style:"Buddhist stupa architecture",
+    builder:"Emperor Ashoka", coords:"23.4794° N, 77.7398° E",
+    model:"assets/models/sanchi-stupa.glb",
+    backdrop:"https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Sanchi%20Stupa.jpg?width=1600",
+    history:[
+      "The Great Stupa at Sanchi was originally commissioned by the Mauryan emperor Ashoka around 250 BCE, in the decades after his conversion to Buddhism, to enshrine relics of the Buddha within a simple brick hemispherical dome. It sits on a hilltop overlooking the plains of Madhya Pradesh, near ancient trade and pilgrimage routes.",
+      "Over the following two centuries the stupa was expanded to roughly double its original size and clad in stone, and around the 1st century BCE the Satavahana dynasty added its most famous features: four immense carved gateways, or toranas, at the cardinal points, covered in relief scenes from the Jataka tales of the Buddha's past lives, alongside a surrounding stone railing (vedika).",
+      "As Buddhism declined in India, the site fell into obscurity for centuries, overtaken by jungle. It was rediscovered in 1818 and, after decades of amateur digging, was carefully excavated and restored in the early 20th century under archaeologist Sir John Marshall."
+    ],
+    legend:"Nearly 2,300 years old — one of the oldest surviving stone structures in India.",
+    architecture:[
+      {title:"The Hemispherical Dome (Anda)", view:"overall", desc:"The stupa's core form: a solid brick-and-stone dome symbolising the universe, enshrining relics at its heart."},
+      {title:"The Crowning Chattra", view:"crown", desc:"A triple stone umbrella (chattra) tops the dome within a square railed harmika, symbolising the tiers of Buddhist law."},
+      {title:"The Four Toranas", view:"base", desc:"Elaborately carved gateways at each cardinal point narrate the Jataka tales in relief — among the finest early Buddhist stone carving in India."},
+      {title:"The Vedika Railing", view:"side", desc:"A continuous stone railing encircles the dome, marking the sacred processional path (pradakshina patha) used by circumambulating pilgrims."}
+    ],
+    preservation:"Inscribed as a UNESCO World Heritage Site in 1989, Sanchi is maintained by the Archaeological Survey of India, with active conservation of the stone toranas and railing against weathering on its exposed hilltop location.",
+    status:"Sanchi remains an active Buddhist pilgrimage destination and a major archaeological tourism site, with the Great Stupa surrounded by smaller stupas, monasteries, temples and pillars spanning over a thousand years of continuous building — one of the best-preserved Buddhist monument complexes in the country.",
+    setting:"A quiet hilltop archaeological park in rural Madhya Pradesh — open grassland, scattered ruins, and sweeping views over the surrounding countryside, far removed from any modern city.",
+    gallery:[
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Sanchi%20Stupa.jpg?width=900", caption:"The Great Stupa and one of its carved gateways."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Stupa%201,%20Sanchi%2002.jpg?width=900", caption:"Wide view of the stupa on its hilltop platform."},
+      {url:"https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Sanchi%20Stupa%20(1).jpg?width=900", caption:"Detail of the carved stone railing (vedika)."}
+    ],
+    tour:[
+      {t:"Climbing the Hilltop", d:"The traditional pilgrim's approach, up the hill overlooking the plains.", view:"approach"},
+      {t:"The Four Toranas", d:"Carved gateways narrating the Buddha's past lives in stone relief.", view:"base"},
+      {t:"The Vedika Railing", d:"The processional path pilgrims still walk around the dome.", view:"side"},
+      {t:"The Hemispherical Dome", d:"The stupa's ancient core, nearly 2,300 years old.", view:"overall"},
+      {t:"The Crowning Chattra", d:"A triple stone umbrella marking the summit of the dome.", view:"crown"},
+      {t:"The Monastic Complex", d:"The wider hilltop site of stupas, monasteries and pillars.", view:"wide"}
+    ],
+    quiz:[
+      {q:"Who originally commissioned the Great Stupa at Sanchi?", opts:["Chandragupta Maurya","Emperor Ashoka","Kanishka","Harshavardhana"], a:1},
+      {q:"What are the carved gateways at Sanchi called?", opts:["Toranas","Chattras","Vedikas","Stambhas"], a:0},
+      {q:"In which century was Sanchi rediscovered after being lost to jungle?", opts:["18th century","19th century (1818)","20th century","17th century"], a:1}
+    ]
+  }
+];
+
+let current = 0;
+let tourStep = 0;
+let tourOpen = false;
+let rotating = true;
+let lightMode = "day"; // day | night
+let synthUtterance = null;
+
+function romanIndex(i){ return String(i+1).padStart(2,"0"); }
+
+function stopSpeech(){
+  if(window.speechSynthesis){ window.speechSynthesis.cancel(); }
+  document.getElementById("btnAudio").classList.remove("on");
+}
+function speak(text){
+  if(!window.speechSynthesis){ alert("Audio narration isn't supported in this browser."); return; }
+  stopSpeech();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.95; u.pitch = 1;
+  u.onend = ()=> document.getElementById("btnAudio").classList.remove("on");
+  synthUtterance = u;
+  window.speechSynthesis.speak(u);
+  document.getElementById("btnAudio").classList.add("on");
+}
+
+function setCameraView(key){
+  const viewer = document.getElementById("viewer");
+  if(V[key]) viewer.setAttribute("camera-orbit", V[key]);
+}
+
+function renderNav(){
+  const nav = document.getElementById("plaqueNav");
+  nav.innerHTML = "";
+  MONUMENTS.forEach((m,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "plaque" + (i===current ? " active":"");
+    btn.setAttribute("data-index", romanIndex(i));
+    btn.innerHTML = `<span class="p-name">${m.name}</span><span class="p-loc">${m.location.split(",")[0]}</span>`;
+    btn.onclick = ()=>{ current = i; tourStep = 0; tourOpen=false; closeFocus(); stopSpeech(); renderAll(); };
+    nav.appendChild(btn);
+  });
+}
+
+function applyLightMode(){
+  const bd = document.getElementById("stageBackdrop");
+  const viewer = document.getElementById("viewer");
+  bd.classList.remove("lt-night");
+  const btn = document.getElementById("btnLight");
+  if(lightMode==="day"){ viewer.setAttribute("exposure","1.05"); btn.textContent="🌤 Daylight"; }
+  else { bd.classList.add("lt-night"); viewer.setAttribute("exposure","0.5"); btn.textContent="🌙 Night"; }
+}
+
+function renderStage(m){
+  document.getElementById("stageBackdrop").style.backgroundImage = `url('${m.backdrop}')`;
+  const viewer = document.getElementById("viewer");
+  viewer.setAttribute("src", m.model);
+  viewer.setAttribute("alt", m.name + " 3D reconstruction");
+  viewer.setAttribute("camera-orbit", V.overall);
+  document.getElementById("stageCaption").textContent = `Interactive 3D Reconstruction · ${m.name}`;
+  applyLightMode();
+}
+
+function renderTitle(m){
+  document.getElementById("eraTag").textContent = m.era;
+  document.getElementById("monName").textContent = m.name;
+  document.getElementById("monTagline").textContent = m.tagline;
+  const facts = [["Location", m.location],["Coordinates", m.coords],["Style", m.style],["Built by", m.builder]];
+  document.getElementById("factStrip").innerHTML = facts.map(([k,v])=>
+    `<div class="fact"><span class="eyebrow">${k}</span><span class="val">${v}</span></div>`).join("");
+}
+
+function renderPanels(m){
+  document.getElementById("panel-history").innerHTML = `
+    <div class="section-head"><h4 class="label">Essential History</h4></div>
+    <div class="chronicle" style="margin-top:14px;">${m.history.map(p=>`<p>${p}</p>`).join("")}<div class="legend">${m.legend}</div></div>
+  `;
+
+  document.getElementById("panel-architecture").innerHTML = `
+    <div class="section-head"><h4 class="label">Architectural Detailing</h4></div>
+    <div class="arch-grid" style="margin-top:14px;">
+      ${m.architecture.map((a,i)=>`
+        <div class="arch-card">
+          <h5>${a.title}</h5><p>${a.desc}</p>
+          <div class="row">
+            <button class="mini-btn gold" onclick="focusArch(${i})">🎯 Focus View</button>
+          </div>
+        </div>`).join("")}
+    </div>
+  `;
+
+  document.getElementById("panel-gallery").innerHTML = `
+    <div class="gallery-grid">
+      ${m.gallery.map(g=>`<figure><img src="${g.url}" alt="${m.name}" loading="lazy"><figcaption>${g.caption}</figcaption></figure>`).join("")}
+    </div>
+  `;
+
+  document.getElementById("panel-preservation").innerHTML = `
+    <div class="status-card alt">
+      <h4>Preservation & Protection</h4>
+      <p>${m.preservation}</p>
+    </div>
+  `;
+
+  document.getElementById("panel-status").innerHTML = `
+    <div class="status-card">
+      <h4>Current Situation</h4>
+      <p>${m.status}</p>
+    </div>
+    <div class="setting-note"><span class="dot"></span><p><strong style="color:var(--ivory)">Real-world setting — </strong>${m.setting}</p></div>
+  `;
+
+  renderQuiz(m);
+}
+
+// ---------- Architecture Focus overlay ----------
+function focusArch(i){
+  const m = MONUMENTS[current];
+  const a = m.architecture[i];
+  document.querySelector(".stage").scrollIntoView({behavior:"smooth", block:"start"});
+  const viewer = document.getElementById("viewer");
+  if(rotating){ viewer.removeAttribute("auto-rotate"); rotating = false; document.getElementById("btnRotate").classList.remove("on"); }
+  setCameraView(a.view);
+  document.getElementById("focusTitle").textContent = a.title;
+  document.getElementById("focusDesc").textContent = a.desc;
+  document.getElementById("focusPanel").style.display = "block";
+  document.getElementById("focusPanel").dataset.view = a.view;
+}
+function closeFocus(){ document.getElementById("focusPanel").style.display="none"; }
+document.getElementById("focusClose").onclick = closeFocus;
+document.getElementById("focusRefocus").onclick = ()=>{
+  const v = document.getElementById("focusPanel").dataset.view;
+  if(v) setCameraView(v);
+};
+
+// ---------- Guided tour overlay ----------
+function renderTourPanel(){
+  const m = MONUMENTS[current];
+  document.getElementById("tourStepsList").innerHTML = m.tour.map((s,i)=>`
+    <div class="tour-step ${i===tourStep?'active':''}" onclick="goTourStep(${i})">
+      <span class="n">${romanIndex(i)}</span><span>${s.t}</span>
+    </div>`).join("");
+}
+function goTourStep(i){
+  const m = MONUMENTS[current];
+  tourStep = Math.max(0, Math.min(m.tour.length-1, i));
+  setCameraView(m.tour[tourStep].view);
+  renderTourPanel();
+}
+function openTour(){
+  tourOpen = true; tourStep = 0;
+  document.getElementById("tourPanel").style.display = "block";
+  document.getElementById("tourToggleBtn").textContent = "🧭 Tour Active";
+  renderTourPanel();
+  goTourStep(0);
+}
+function closeTour(){
+  tourOpen = false;
+  document.getElementById("tourPanel").style.display = "none";
+  document.getElementById("tourToggleBtn").textContent = "🧭 Start Guided Tour";
+}
+document.getElementById("tourToggleBtn").onclick = ()=> tourOpen ? closeTour() : openTour();
+document.getElementById("tourClose").onclick = closeTour;
+document.getElementById("tourPrev").onclick = ()=> goTourStep(tourStep-1);
+document.getElementById("tourNext").onclick = ()=> goTourStep(tourStep+1);
+
+// ---------- Toolbar ----------
+document.getElementById("btnReset").onclick = ()=>{
+  setCameraView("overall");
+  document.getElementById("viewer").cameraTarget = "auto auto auto";
+};
+document.getElementById("btnRotate").onclick = function(){
+  rotating = !rotating;
+  const viewer = document.getElementById("viewer");
+  if(rotating){ viewer.setAttribute("auto-rotate",""); this.classList.add("on"); }
+  else { viewer.removeAttribute("auto-rotate"); this.classList.remove("on"); }
+};
+document.getElementById("btnLight").onclick = ()=>{
+  lightMode = lightMode==="day" ? "night" : "day";
+  applyLightMode();
+};
+document.getElementById("btnAudio").onclick = function(){
+  if(this.classList.contains("on")){ stopSpeech(); return; }
+  const m = MONUMENTS[current];
+  speak(m.history.join(" "));
+};
+document.getElementById("btnFullscreen").onclick = ()=>{
+  const stage = document.querySelector(".stage");
+  if(!document.fullscreenElement){ stage.requestFullscreen?.(); }
+  else{ document.exitFullscreen?.(); }
+};
+
+// ---------- Quiz ----------
+function renderQuiz(m){
+  let qi = 0, score = 0, answered = false;
+  const panel = document.getElementById("panel-quiz");
+  function draw(){
+    if(qi >= m.quiz.length){
+      panel.innerHTML = `
+        <div class="quiz-box">
+          <div class="quiz-result">You scored ${score} / ${m.quiz.length}</div>
+          <p style="color:var(--ivory-dim);font-size:14px;">on ${m.name}</p>
+          <button class="mini-btn gold" onclick="renderQuiz(MONUMENTS[current])" style="margin-top:14px;">↺ Try Again</button>
+        </div>`;
+      return;
+    }
+    const q = m.quiz[qi];
+    answered = false;
+    panel.innerHTML = `
+      <div class="quiz-box">
+        <div class="quiz-progress">QUESTION ${qi+1} OF ${m.quiz.length} · ${m.name.toUpperCase()}</div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o,i)=>`<button class="quiz-opt" data-i="${i}">${o}</button>`).join("")}
+        </div>
+        <div class="quiz-footer">
+          <span id="quizFeedback" style="font-size:13px;color:var(--ivory-dim);"></span>
+          <button class="mini-btn gold" id="quizNext" style="display:none;">Next ▶</button>
+        </div>
+      </div>`;
+    panel.querySelectorAll(".quiz-opt").forEach(btn=>{
+      btn.onclick = ()=>{
+        if(answered) return;
+        answered = true;
+        const i = +btn.dataset.i;
+        const correct = i === q.a;
+        if(correct){ score++; btn.classList.add("correct"); document.getElementById("quizFeedback").textContent="Correct!"; }
+        else{
+          btn.classList.add("wrong");
+          panel.querySelectorAll(".quiz-opt")[q.a].classList.add("correct");
+          document.getElementById("quizFeedback").textContent="Not quite.";
+        }
+        document.getElementById("quizNext").style.display = "inline-block";
+      };
+    });
+    const nextBtn = document.getElementById("quizNext");
+    nextBtn.onclick = ()=>{ qi++; draw(); };
+  }
+  draw();
+}
+
+function renderAll(){
+  const m = MONUMENTS[current];
+  renderNav(); renderStage(m); renderTitle(m); renderPanels(m);
+  closeTour(); closeFocus();
+}
+
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>

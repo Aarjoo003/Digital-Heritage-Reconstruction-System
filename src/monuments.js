@@ -1,7 +1,9 @@
+const BASE_URL = import.meta.env.BASE_URL;
+
 export const monuments = [
 
     // =========================================================
-    // 01 — RAJWADA PALACE (Indore, Madhya Pradesh)
+    // 01 — RAJWADA PALACE
     // =========================================================
     {
         id: "rajwada-palace",
@@ -17,8 +19,7 @@ export const monuments = [
         isMP: true,
         isIndore: true,
 
-        model:
-            "/models/Rajwada/Rajwada.glb",
+        model: `${BASE_URL}models/Rajwada/Rajwada.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Rajwada_Palace%2C_Indore.jpg?width=1600",
@@ -123,47 +124,22 @@ export const monuments = [
         ],
 
         tour: [
-            {
-                title: "Grand Entrance Portal",
-                hotspot: 0
-            },
-            {
-                title: "Basalt Stone Bastion",
-                hotspot: 1
-            },
-            {
-                title: "Teakwood Jharokha Balconies",
-                hotspot: 2
-            },
-            {
-                title: "Central Ganesh Chowk",
-                hotspot: 3
-            },
-            {
-                title: "Royal Flagstaff Finial",
-                hotspot: 4
-            }
+            { title: "Grand Entrance Portal", hotspot: 0 },
+            { title: "Basalt Stone Bastion", hotspot: 1 },
+            { title: "Teakwood Jharokha Balconies", hotspot: 2 },
+            { title: "Central Ganesh Chowk", hotspot: 3 },
+            { title: "Royal Flagstaff Finial", hotspot: 4 }
         ],
 
         quiz: [
             {
                 question: "How many storeys does Rajwada Palace in Indore have?",
-                options: [
-                    "5 storeys",
-                    "7 storeys",
-                    "9 storeys",
-                    "3 storeys"
-                ],
+                options: ["5 storeys", "7 storeys", "9 storeys", "3 storeys"],
                 answer: 1
             },
             {
                 question: "Which dynasty constructed Rajwada Palace?",
-                options: [
-                    "Holkar Dynasty",
-                    "Scindia Dynasty",
-                    "Mughal Dynasty",
-                    "Paramara Dynasty"
-                ],
+                options: ["Holkar Dynasty", "Scindia Dynasty", "Mughal Dynasty", "Paramara Dynasty"],
                 answer: 0
             }
         ],
@@ -175,8 +151,9 @@ export const monuments = [
         ]
     },
 
+
     // =========================================================
-    // 02 — LAL BAGH PALACE (Indore, Madhya Pradesh)
+    // 02 — LAL BAGH PALACE
     // =========================================================
     {
         id: "lal-bagh-palace",
@@ -192,8 +169,7 @@ export const monuments = [
         isMP: true,
         isIndore: true,
 
-        model:
-            "/models/LalBagh/LalBagh.glb",
+        model: `${BASE_URL}models/LalBagh/LalBagh.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Lal_Baug_Palace_IndoreR0010277s.jpg?width=1600",
@@ -298,26 +274,11 @@ export const monuments = [
         ],
 
         tour: [
-            {
-                title: "Gilded Entrance Gates",
-                hotspot: 0
-            },
-            {
-                title: "Classical Portico",
-                hotspot: 1
-            },
-            {
-                title: "Royal Ballroom",
-                hotspot: 2
-            },
-            {
-                title: "Italian Marble Saloon",
-                hotspot: 3
-            },
-            {
-                title: "River Estate Gardens",
-                hotspot: 4
-            }
+            { title: "Gilded Entrance Gates", hotspot: 0 },
+            { title: "Classical Portico", hotspot: 1 },
+            { title: "Royal Ballroom", hotspot: 2 },
+            { title: "Italian Marble Saloon", hotspot: 3 },
+            { title: "River Estate Gardens", hotspot: 4 }
         ],
 
         quiz: [
@@ -350,8 +311,9 @@ export const monuments = [
         ]
     },
 
+
     // =========================================================
-    // 03 — KRISHNAPURA CHHATRIS (Indore, Madhya Pradesh)
+    // 03 — KRISHNAPURA CHHATRIS
     // =========================================================
     {
         id: "krishnapura-chhatris",
@@ -367,8 +329,7 @@ export const monuments = [
         isMP: true,
         isIndore: true,
 
-        model:
-            "/models/Krishnapura/Krishnapura.glb",
+        model: `${BASE_URL}models/Krishnapura/Krishnapura.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Indore_Krishnapura_Chhatri.JPG?width=1600",
@@ -473,26 +434,11 @@ export const monuments = [
         ],
 
         tour: [
-            {
-                title: "Stepped River Ghats",
-                hotspot: 0
-            },
-            {
-                title: "Pillared Maratha Colonnade",
-                hotspot: 2
-            },
-            {
-                title: "Sacred Inner Sanctum",
-                hotspot: 3
-            },
-            {
-                title: "Ribbed Stone Spire",
-                hotspot: 1
-            },
-            {
-                title: "River Mirror Reflection",
-                hotspot: 4
-            }
+            { title: "Stepped River Ghats", hotspot: 0 },
+            { title: "Pillared Maratha Colonnade", hotspot: 2 },
+            { title: "Sacred Inner Sanctum", hotspot: 3 },
+            { title: "Ribbed Stone Spire", hotspot: 1 },
+            { title: "River Mirror Reflection", hotspot: 4 }
         ],
 
         quiz: [
@@ -525,8 +471,9 @@ export const monuments = [
         ]
     },
 
+
     // =========================================================
-    // 04 — JAHAZ MAHAL (Mandu, Dhar District, Madhya Pradesh)
+    // 04 — JAHAZ MAHAL
     // =========================================================
     {
         id: "jahaz-mahal",
@@ -542,8 +489,7 @@ export const monuments = [
         isMP: true,
         isIndore: false,
 
-        model:
-            "/models/JahazMahal/JahazMahal.glb",
+        model: `${BASE_URL}models/JahazMahal/JahazMahal.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Jahaz_Mahal_01.jpg?width=1600",
@@ -648,26 +594,11 @@ export const monuments = [
         ],
 
         tour: [
-            {
-                title: "Ship Hull Facade",
-                hotspot: 0
-            },
-            {
-                title: "Hydraulic Aqueduct",
-                hotspot: 3
-            },
-            {
-                title: "Scalloped Lotus Pool",
-                hotspot: 2
-            },
-            {
-                title: "Rooftop Domed Pavilions",
-                hotspot: 1
-            },
-            {
-                title: "Twin Lake Vistas",
-                hotspot: 4
-            }
+            { title: "Ship Hull Facade", hotspot: 0 },
+            { title: "Hydraulic Aqueduct", hotspot: 3 },
+            { title: "Scalloped Lotus Pool", hotspot: 2 },
+            { title: "Rooftop Domed Pavilions", hotspot: 1 },
+            { title: "Twin Lake Vistas", hotspot: 4 }
         ],
 
         quiz: [
@@ -700,6 +631,7 @@ export const monuments = [
         ]
     },
 
+
     // =========================================================
     // 05 — CHARMINAR
     // =========================================================
@@ -715,8 +647,7 @@ export const monuments = [
         architect: "Muhammad Quli Qutb Shah",
         coordinates: "17.3616° N, 78.4747° E",
 
-        model:
-            "/models/Charminar/Charminar.glb",
+        model: `${BASE_URL}models/Charminar/Charminar.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Charminar-Pride%20of%20Hyderabad.jpg?width=1600",
@@ -728,7 +659,6 @@ export const monuments = [
             "Charminar is not simply an isolated monument. It forms the architectural and urban heart of Hyderabad's historic Old City.",
 
         history: {
-
             when:
                 "Construction of Charminar was completed around 1591 CE during the reign of Muhammad Quli Qutb Shah.",
 
@@ -795,90 +725,44 @@ export const monuments = [
 
         hotspots: [
             {
-                title:
-                    "Four Minarets",
-                description:
-                    "The four soaring minarets define the silhouette of Charminar and give the monument its name.",
-                anchor:
-                    [0.73, 0.78, 0.08]
+                title: "Four Minarets",
+                description: "The four soaring minarets define the silhouette of Charminar and give the monument its name.",
+                anchor: [0.73, 0.78, 0.08]
             },
             {
-                title:
-                    "Central Arch",
-                description:
-                    "The monumental arch forms the visual centre of the structure and its principal opening.",
-                anchor:
-                    [0.00, 0.43, 0.95]
+                title: "Central Arch",
+                description: "The monumental arch forms the visual centre of the structure and its principal opening.",
+                anchor: [0.00, 0.43, 0.95]
             },
             {
-                title:
-                    "Upper Prayer Space",
-                description:
-                    "The upper level contains prayer spaces reached through internal circulation.",
-                anchor:
-                    [0.00, 0.76, 0.05]
+                title: "Upper Prayer Space",
+                description: "The upper level contains prayer spaces reached through internal circulation.",
+                anchor: [0.00, 0.76, 0.05]
             },
             {
-                title:
-                    "Decorative Surface",
-                description:
-                    "Stucco ornament and repeated architectural detailing enrich the surface of the monument.",
-                anchor:
-                    [-0.53, 0.53, 0.74]
+                title: "Decorative Surface",
+                description: "Stucco ornament and repeated architectural detailing enrich the surface of the monument.",
+                anchor: [-0.53, 0.53, 0.74]
             }
         ],
 
         tour: [
-            {
-                title:
-                    "Historic City Approach",
-                hotspot:
-                    0
-            },
-            {
-                title:
-                    "Central Arch",
-                hotspot:
-                    1
-            },
-            {
-                title:
-                    "Upper Level",
-                hotspot:
-                    2
-            },
-            {
-                title:
-                    "Four Minarets",
-                hotspot:
-                    0
-            }
+            { title: "Historic City Approach", hotspot: 0 },
+            { title: "Central Arch", hotspot: 1 },
+            { title: "Upper Level", hotspot: 2 },
+            { title: "Four Minarets", hotspot: 0 }
         ],
 
         quiz: [
             {
-                question:
-                    "In which year was Charminar built?",
-                options: [
-                    "1491",
-                    "1591",
-                    "1691",
-                    "1791"
-                ],
-                answer:
-                    1
+                question: "In which year was Charminar built?",
+                options: ["1491", "1591", "1691", "1791"],
+                answer: 1
             },
             {
-                question:
-                    "How many major minarets does Charminar have?",
-                options: [
-                    "Two",
-                    "Three",
-                    "Four",
-                    "Six"
-                ],
-                answer:
-                    2
+                question: "How many major minarets does Charminar have?",
+                options: ["Two", "Three", "Four", "Six"],
+                answer: 2
             }
         ],
 
@@ -892,7 +776,7 @@ export const monuments = [
 
 
     // =========================================================
-    // 02 — GATEWAY OF INDIA
+    // 06 — GATEWAY OF INDIA
     // =========================================================
     {
         id: "gateway-of-india",
@@ -906,8 +790,7 @@ export const monuments = [
         architect: "George Wittet",
         coordinates: "18.9220° N, 72.8347° E",
 
-        model:
-            "/models/GatewayOfIndia/GatewayofIndia.glb",
+        model: `${BASE_URL}models/GatewayOfIndia/GatewayofIndia.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Mumbai%2003-2016%2030%20Gateway%20of%20India.jpg?width=1600",
@@ -919,7 +802,6 @@ export const monuments = [
             "The Gateway of India is best understood through its waterfront setting, where the monument, harbour and public plaza form one continuous experience.",
 
         history: {
-
             when:
                 "The foundation stone was laid in 1913 and the monument was completed in 1924.",
 
@@ -980,90 +862,44 @@ export const monuments = [
 
         hotspots: [
             {
-                title:
-                    "Central Arch",
-                description:
-                    "The large central opening dominates the façade and defines the monument's identity.",
-                anchor:
-                    [0.00, 0.40, 0.95]
+                title: "Central Arch",
+                description: "The large central opening dominates the façade and defines the monument's identity.",
+                anchor: [0.00, 0.40, 0.95]
             },
             {
-                title:
-                    "Central Dome",
-                description:
-                    "The dome crowns the monument and strengthens its Indo-Saracenic character.",
-                anchor:
-                    [0.00, 0.79, 0.02]
+                title: "Central Dome",
+                description: "The dome crowns the monument and strengthens its Indo-Saracenic character.",
+                anchor: [0.00, 0.79, 0.02]
             },
             {
-                title:
-                    "Corner Turrets",
-                description:
-                    "The turret forms strengthen the four corners and frame the central composition.",
-                anchor:
-                    [0.69, 0.72, 0.08]
+                title: "Corner Turrets",
+                description: "The turret forms strengthen the four corners and frame the central composition.",
+                anchor: [0.69, 0.72, 0.08]
             },
             {
-                title:
-                    "Waterfront",
-                description:
-                    "The relationship with the sea and harbour is essential to understanding the monument.",
-                anchor:
-                    [0.00, 0.08, -1.00]
+                title: "Waterfront",
+                description: "The relationship with the sea and harbour is essential to understanding the monument.",
+                anchor: [0.00, 0.08, -1.00]
             }
         ],
 
         tour: [
-            {
-                title:
-                    "Waterfront Arrival",
-                hotspot:
-                    3
-            },
-            {
-                title:
-                    "Central Arch",
-                hotspot:
-                    0
-            },
-            {
-                title:
-                    "Central Dome",
-                hotspot:
-                    1
-            },
-            {
-                title:
-                    "Turret Detail",
-                hotspot:
-                    2
-            }
+            { title: "Waterfront Arrival", hotspot: 3 },
+            { title: "Central Arch", hotspot: 0 },
+            { title: "Central Dome", hotspot: 1 },
+            { title: "Turret Detail", hotspot: 2 }
         ],
 
         quiz: [
             {
-                question:
-                    "When was the Gateway of India completed?",
-                options: [
-                    "1901",
-                    "1911",
-                    "1924",
-                    "1947"
-                ],
-                answer:
-                    2
+                question: "When was the Gateway of India completed?",
+                options: ["1901", "1911", "1924", "1947"],
+                answer: 2
             },
             {
-                question:
-                    "Which material is strongly associated with the monument?",
-                options: [
-                    "Basalt",
-                    "Wood",
-                    "Marble",
-                    "Concrete"
-                ],
-                answer:
-                    0
+                question: "Which material is strongly associated with the monument?",
+                options: ["Basalt", "Wood", "Marble", "Concrete"],
+                answer: 0
             }
         ],
 
@@ -1077,7 +913,7 @@ export const monuments = [
 
 
     // =========================================================
-    // 03 — LOTUS TEMPLE
+    // 07 — LOTUS TEMPLE
     // =========================================================
     {
         id: "lotus-temple",
@@ -1091,8 +927,7 @@ export const monuments = [
         architect: "Fariborz Sahba",
         coordinates: "28.5535° N, 77.2588° E",
 
-        model:
-            "/models/LotusTemple/Lotustemple.glb",
+        model: `${BASE_URL}models/LotusTemple/Lotustemple.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Lotus%20temple%20in%20Delhi,%20India.jpg?width=1600",
@@ -1104,7 +939,6 @@ export const monuments = [
             "The Lotus Temple transforms the familiar lotus form into a monumental place of worship surrounded by gardens and reflecting pools.",
 
         history: {
-
             when:
                 "The Lotus Temple was completed in 1986.",
 
@@ -1165,104 +999,50 @@ export const monuments = [
 
         hotspots: [
             {
-                title:
-                    "Lotus Petals",
-                description:
-                    "The petal-shaped shells create the defining visual identity of the temple.",
-                anchor:
-                    [0.00, 0.75, 0.08]
+                title: "Lotus Petals",
+                description: "The petal-shaped shells create the defining visual identity of the temple.",
+                anchor: [0.00, 0.75, 0.08]
             },
             {
-                title:
-                    "Main Entrance",
-                description:
-                    "The main visitor approach is integrated into the surrounding gardens.",
-                anchor:
-                    [0.00, 0.22, 0.92]
+                title: "Main Entrance",
+                description: "The main visitor approach is integrated into the surrounding gardens.",
+                anchor: [0.00, 0.22, 0.92]
             },
             {
-                title:
-                    "Central Hall",
-                description:
-                    "The central hall sits within the surrounding petal structure.",
-                anchor:
-                    [0.00, 0.48, 0.00]
+                title: "Central Hall",
+                description: "The central hall sits within the surrounding petal structure.",
+                anchor: [0.00, 0.48, 0.00]
             },
             {
-                title:
-                    "Reflecting Pools",
-                description:
-                    "The surrounding pools visually frame the building and reinforce the lotus metaphor.",
-                anchor:
-                    [0.73, 0.08, 0.72]
+                title: "Reflecting Pools",
+                description: "The surrounding pools visually frame the building and reinforce the lotus metaphor.",
+                anchor: [0.73, 0.08, 0.72]
             },
             {
-                title:
-                    "Landscape",
-                description:
-                    "Formal gardens, paths and lawns are an essential part of the visitor experience.",
-                anchor:
-                    [-0.82, 0.08, -0.65]
+                title: "Landscape",
+                description: "Formal gardens, paths and lawns are an essential part of the visitor experience.",
+                anchor: [-0.82, 0.08, -0.65]
             }
         ],
 
         tour: [
-            {
-                title:
-                    "Garden Approach",
-                hotspot:
-                    4
-            },
-            {
-                title:
-                    "Reflecting Pools",
-                hotspot:
-                    3
-            },
-            {
-                title:
-                    "Main Entrance",
-                hotspot:
-                    1
-            },
-            {
-                title:
-                    "Lotus Petals",
-                hotspot:
-                    0
-            },
-            {
-                title:
-                    "Central Hall",
-                hotspot:
-                    2
-            }
+            { title: "Garden Approach", hotspot: 4 },
+            { title: "Reflecting Pools", hotspot: 3 },
+            { title: "Main Entrance", hotspot: 1 },
+            { title: "Lotus Petals", hotspot: 0 },
+            { title: "Central Hall", hotspot: 2 }
         ],
 
         quiz: [
             {
-                question:
-                    "When was the Lotus Temple completed?",
-                options: [
-                    "1965",
-                    "1975",
-                    "1986",
-                    "1996"
-                ],
-                answer:
-                    2
+                question: "When was the Lotus Temple completed?",
+                options: ["1965", "1975", "1986", "1996"],
+                answer: 2
             },
             {
-                question:
-                    "What inspired the building's main form?",
-                options: [
-                    "Lotus flower",
-                    "Minaret",
-                    "Fort",
-                    "Chariot"
-                ],
-                answer:
-                    0
+                question: "What inspired the building's main form?",
+                options: ["Lotus flower", "Minaret", "Fort", "Chariot"],
+                answer: 0
             }
         ],
 
@@ -1275,7 +1055,7 @@ export const monuments = [
 
 
     // =========================================================
-    // 04 — QUTUB MINAR
+    // 08 — QUTUB MINAR
     // =========================================================
     {
         id: "qutub-minar",
@@ -1289,8 +1069,7 @@ export const monuments = [
         architect: "Qutb-ud-din Aibak · Iltutmish",
         coordinates: "28.5245° N, 77.1855° E",
 
-        model:
-            "/models/QutubMinar/Qutubminar.glb",
+        model: `${BASE_URL}models/QutubMinar/Qutubminar.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Qutub%20Minar,%20Delhi,%20India.jpg?width=1600",
@@ -1302,7 +1081,6 @@ export const monuments = [
             "The Qutub Minar is best understood as the centrepiece of a much larger archaeological complex containing monuments from several periods.",
 
         history: {
-
             when:
                 "Construction began around 1192–93 CE.",
 
@@ -1363,104 +1141,60 @@ export const monuments = [
 
         hotspots: [
             {
-                title:
-                    "Tower Base",
-                description:
-                    "The broad base establishes the monument's scale and vertical rise.",
-                anchor:
-                    [0.00, 0.14, 0.90]
+                title: "Tower Base",
+                description: "The broad base establishes the monument's scale and vertical rise.",
+                anchor: [0.00, 0.14, 0.90]
             },
             {
-                title:
-                    "Fluted Shaft",
-                description:
-                    "Alternating profiles give the shaft much of its distinctive visual texture.",
-                anchor:
-                    [0.00, 0.43, 0.67]
+                title: "Fluted Shaft",
+                description: "Alternating profiles give the shaft much of its distinctive visual texture.",
+                anchor: [0.00, 0.43, 0.67]
             },
             {
-                title:
-                    "Inscriptional Bands",
-                description:
-                    "Carved bands divide and enrich the sandstone surface.",
-                anchor:
-                    [0.00, 0.61, 0.54]
+                title: "Inscriptional Bands",
+                description: "Carved bands divide and enrich the sandstone surface.",
+                anchor: [0.00, 0.61, 0.54]
             },
             {
-                title:
-                    "Projecting Balcony",
-                description:
-                    "Projecting balconies create strong horizontal divisions between the storeys.",
-                anchor:
-                    [0.48, 0.72, 0.16]
+                title: "Projecting Balcony",
+                description: "Projecting balconies create strong horizontal divisions between the storeys.",
+                anchor: [0.48, 0.72, 0.16]
             },
             {
-                title:
-                    "Archaeological Context",
-                description:
-                    "The surrounding complex is essential to understanding the tower's historical significance.",
-                anchor:
-                    [-0.72, 0.18, -0.58]
+                title: "Archaeological Context",
+                description: "The surrounding complex is essential to understanding the tower's historical significance.",
+                anchor: [-0.72, 0.18, -0.58]
             }
         ],
 
         tour: [
-            {
-                title:
-                    "Archaeological Approach",
-                hotspot:
-                    4
-            },
-            {
-                title:
-                    "Tower Base",
-                hotspot:
-                    0
-            },
-            {
-                title:
-                    "Fluted Shaft",
-                hotspot:
-                    1
-            },
-            {
-                title:
-                    "Decorative Bands",
-                hotspot:
-                    2
-            },
-            {
-                title:
-                    "Balcony",
-                hotspot:
-                    3
-            }
+            { title: "Archaeological Approach", hotspot: 4 },
+            { title: "Tower Base", hotspot: 0 },
+            { title: "Fluted Shaft", hotspot: 1 },
+            { title: "Decorative Bands", hotspot: 2 },
+            { title: "Balcony", hotspot: 3 }
         ],
 
         quiz: [
             {
-                question:
-                    "What is the height of Qutub Minar?",
+                question: "What is the height of Qutub Minar?",
                 options: [
                     "52.5 metres",
                     "62.5 metres",
                     "72.5 metres",
                     "82.5 metres"
                 ],
-                answer:
-                    2
+                answer: 2
             },
             {
-                question:
-                    "Which material is strongly associated with the tower?",
+                question: "Which material is strongly associated with the tower?",
                 options: [
                     "Red sandstone",
                     "Wood",
                     "Glass",
                     "Concrete"
                 ],
-                answer:
-                    0
+                answer: 0
             }
         ],
 
@@ -1474,7 +1208,7 @@ export const monuments = [
 
 
     // =========================================================
-    // 05 — SANCHI STUPA
+    // 09 — SANCHI STUPA
     // =========================================================
     {
         id: "sanchi-stupa",
@@ -1490,8 +1224,7 @@ export const monuments = [
         isMP: true,
         isIndore: false,
 
-        model:
-            "/models/SanchiStupa/SanchiStupa.glb",
+        model: `${BASE_URL}models/SanchiStupa/SanchiStupa.glb`,
 
         heroImage:
             "https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Sanchi%20Stupa.jpg?width=1600",
@@ -1503,7 +1236,6 @@ export const monuments = [
             "Sanchi is not a single structure but an archaeological landscape containing stupas, gateways, railings, temples and monastic remains developed over many centuries.",
 
         history: {
-
             when:
                 "The earliest phase is associated with the 3rd century BCE during the reign of Emperor Ashoka.",
 
@@ -1564,104 +1296,60 @@ export const monuments = [
 
         hotspots: [
             {
-                title:
-                    "Great Stupa",
-                description:
-                    "The hemispherical dome forms the central architectural focus of Stupa 1.",
-                anchor:
-                    [0.00, 0.65, 0.00]
+                title: "Great Stupa",
+                description: "The hemispherical dome forms the central architectural focus of Stupa 1.",
+                anchor: [0.00, 0.65, 0.00]
             },
             {
-                title:
-                    "Torana Gateway",
-                description:
-                    "The four decorated gateways are among the most celebrated features of Sanchi.",
-                anchor:
-                    [0.00, 0.30, 0.95]
+                title: "Torana Gateway",
+                description: "The four decorated gateways are among the most celebrated features of Sanchi.",
+                anchor: [0.00, 0.30, 0.95]
             },
             {
-                title:
-                    "Stone Railing",
-                description:
-                    "The stone railing defines the sacred enclosure and circulation space.",
-                anchor:
-                    [0.82, 0.25, 0.00]
+                title: "Stone Railing",
+                description: "The stone railing defines the sacred enclosure and circulation space.",
+                anchor: [0.82, 0.25, 0.00]
             },
             {
-                title:
-                    "Circumambulatory Path",
-                description:
-                    "The path around the stupa is an important part of ritual and spatial organisation.",
-                anchor:
-                    [-0.72, 0.22, 0.00]
+                title: "Circumambulatory Path",
+                description: "The path around the stupa is an important part of ritual and spatial organisation.",
+                anchor: [-0.72, 0.22, 0.00]
             },
             {
-                title:
-                    "Harmika & Chhatra",
-                description:
-                    "These upper elements crown the stupa and complete its characteristic profile.",
-                anchor:
-                    [0.00, 0.94, 0.00]
+                title: "Harmika & Chhatra",
+                description: "These upper elements crown the stupa and complete its characteristic profile.",
+                anchor: [0.00, 0.94, 0.00]
             }
         ],
 
         tour: [
-            {
-                title:
-                    "Hilltop Approach",
-                hotspot:
-                    3
-            },
-            {
-                title:
-                    "Torana Gateway",
-                hotspot:
-                    1
-            },
-            {
-                title:
-                    "Great Stupa",
-                hotspot:
-                    0
-            },
-            {
-                title:
-                    "Stone Railing",
-                hotspot:
-                    2
-            },
-            {
-                title:
-                    "Upper Elements",
-                hotspot:
-                    4
-            }
+            { title: "Hilltop Approach", hotspot: 3 },
+            { title: "Torana Gateway", hotspot: 1 },
+            { title: "Great Stupa", hotspot: 0 },
+            { title: "Stone Railing", hotspot: 2 },
+            { title: "Upper Elements", hotspot: 4 }
         ],
 
         quiz: [
             {
-                question:
-                    "Sanchi is primarily associated with which tradition?",
+                question: "Sanchi is primarily associated with which tradition?",
                 options: [
                     "Buddhism",
                     "Jainism",
                     "Islam",
                     "Sikhism"
                 ],
-                answer:
-                    0
+                answer: 0
             },
             {
-                question:
-                    "What are the decorated gateways called?",
+                question: "What are the decorated gateways called?",
                 options: [
                     "Toranas",
                     "Minarets",
                     "Mandapas",
                     "Pavilions"
                 ],
-                answer:
-                    0
+                answer: 0
             }
         ],
 
